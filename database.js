@@ -32,33 +32,36 @@ async function login(email, password) {
 }
 
 async function register(body) {
-    try {
-        const { username, email, password, confirmPassword } = body;
-        
-        const [exists_user] = await global.connection.promise().query(
-            'SELECT username, email FROM users WHERE username = ? OR email = ? LIMIT 1',
-            [username, email]
-        );
+    const { username, email, password, confirmPassword } = body;
+    
+    const [exists_user] = await global.connection.promise().query(
+        'SELECT username, email FROM users WHERE username = ? OR email = ? LIMIT 1',
+        [username, email]
+    );
 
-        if (exists_user.length > 0) {
-            const conflicted_field = exists_user[0].username === username ? 'username' : 'email';
-            return { error: `${conflicted_field} já está em uso` };
-        }
-
-        if (password !== confirmPassword) {
-            return { error: 'As senhas não coincidem' };
-        }
-
-        await global.connection.promise().query(
-            'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-            [username, email, password]
-        );
-
-        return { success: 'Usuário registrado com sucesso' };
-    } catch (error) {
-        console.error('Erro no registro:', error);
-        return { error: 'Erro ao registrar usuário' };
+    if (exists_user.length > 0) {
+        const conflicted_field = exists_user[0].username === username ? 'username' : 'email';
+        return { error: `${conflicted_field} já está em uso` };
     }
+
+    if (password !== confirmPassword) {
+        return { error: 'As senhas não coincidem' };
+    }
+
+    await global.connection.promise().query(
+        'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
+        [username, email, password]
+    );
+
+    return { success: 'Usuário registrado com sucesso' };
 }
 
-module.exports = { connectDb, login, register };
+async function getThemes() {
+    const [themes] = await global.connection.promise().query(
+        'SELECT name from themes'
+    )
+
+    return themes
+}
+
+module.exports = { connectDb, login, register, getThemes };

@@ -1,8 +1,13 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function(req, res, next) {
-    res.render('index', { title: 'Quizzes' });
+router.get('/', async function(req, res, next) {
+    const themes = await global.db.getThemes();
+    
+    res.render('index', { 
+        title: 'Quizzes',
+        themes: themes
+    });
 });
 
 router.get('/login', function(req, res, next) {

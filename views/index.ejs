@@ -27,5 +27,19 @@
                 <a href="/login" class="btn btn-outline-primary" role="button" aria-pressed="true">Login</a>
             </div>
         </header>
+
+        <main>
+            <section class="themes">
+                <h2>Temas</h2>
+                <div class="theme-icons-container text-center mb-3">
+
+                    <%themes.forEach(theme => { %>
+                        <a href="/?theme=<%= theme.id %>" class="theme-link btn btn-primary">
+                            <%= theme.name %>
+                        </a>
+                    <% }); %>
+                </div>
+            </section>
+        </main>
     </body>
 </html>
